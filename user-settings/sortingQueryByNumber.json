@@ -4,7 +4,7 @@
       "index": {
         "$indexOfArray": [
           "$customFieldArray.custom_field_id",
-          "5d967d2c821b4031a197b003"
+          "5d967d4c821b4031a197b004"
         ]
       }
     }
@@ -31,27 +31,12 @@
     }
   },
   {
-    "$addFields": {
-      "insensitive": {
-        "$toLower": "$setting.field_value"
-      },
-      "isNotNull": {
-        "$cond": {
-          "if": "$setting.field_value",
-          "then": true,
-          "else": false
-        }
-      }
-    }
-  },
-  {
     "$sort": {
-      "isNotNull": -1,
-      "insensitive": 1
+      "setting.field_value": -1
     }
   },
   {
-    "$skip": 20
+    "$skip": 0
   },
   {
     "$limit": 20
