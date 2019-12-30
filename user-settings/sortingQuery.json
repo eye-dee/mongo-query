@@ -1,0 +1,62 @@
+[
+  {
+    "$addFields": {
+      "index": {
+        "$indexOfArray": [
+          "$customFieldArray.custom_field_id",
+          "5d967d2c821b4031a197b003"
+        ]
+      }
+    }
+  },
+  {
+    "$project": {
+      "setting": {
+        "$cond": {
+          "if": {
+            "$gte": [
+              "$index",
+              0
+            ]
+          },
+          "then": {
+            "$arrayElemAt": [
+              "$customFieldArray",
+              "$index"
+            ]
+          },
+          "else": null
+        }
+      },
+      "customFieldArray": "$customFieldArray",
+      "index": "$index"
+    }
+  },
+  {
+    "$project": {
+      "setting": "$setting",
+      "customFieldArray": "$customFieldArray",
+      "insensitive": {
+        "$toLower": "$setting.field_value"
+      },
+      "isNotNull": {
+        "$cond": {
+          "if": "$setting.field_value",
+          "then": true,
+          "else": false
+        }
+      }
+    }
+  },
+  {
+    "$sort": {
+      "isNotNull": -1,
+      "insensitive": 1
+    }
+  },
+  {
+    "$project": {
+      "customFieldArray": "$customFieldArray"
+    }
+  }
+]
