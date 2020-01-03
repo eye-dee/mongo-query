@@ -39,16 +39,9 @@
     "$skip": 0
   },
   {
-    "$limit": 20
+    "$limit": 100
   },
   {
-    "$project": {
-      "isActive": "$isActive",
-      "customFieldArray": "$customFieldArray",
-      "creationMode": "$creationMode",
-      "createdAt": "$createdAt",
-      "updatedAt": "$updatedAt",
-      "gender": "$gender"
-    }
+    "$unset": ["index", "setting", "isNotNull"]
   }
 ]

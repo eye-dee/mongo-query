@@ -32,6 +32,13 @@
   },
   {
     "$addFields": {
+      "insensitive": {
+        "$toLower": {
+          "$ltrim": {
+            "input": "$setting.field_value"
+          }
+        }
+      },
       "isNotNull": {
         "$cond": {
           "if": "$setting.field_value",
@@ -44,7 +51,7 @@
   {
     "$sort": {
       "isNotNull": -1,
-      "setting.field_value": 1
+      "insensitive": 1
     }
   },
   {
@@ -54,6 +61,35 @@
     "$limit": 20
   },
   {
-    "$unset": ["index", "setting", "isNotNull"]
+    "$unset": [
+      "index",
+      "setting",
+      "isNotNull"
+    ]
+  },
+  {
+    "$lookup": {
+      "from": "users",
+      "localField": "assignedUserId",
+      "foreignField": "_id",
+      "as": "assignedUserId"
+    }
+  },
+  {
+    "$unwind": {
+      "path": "$assignedUserId",
+      "preserveNullAndEmptyArrays": true
+    }
+  },
+  {
+    "$lookup": {
+      "from": "users",
+      "localField": "assignedUserId.parentUserId",
+      "foreignField": "_id",
+      "as": "assignedUserId.parentUserId"
+    }
+  },
+  {
+    "$unwind": "$assignedUserId.parentUserId"
   }
 ]
